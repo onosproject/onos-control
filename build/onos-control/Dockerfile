@@ -9,4 +9,4 @@ USER nobody
 
 COPY --from=base /go/src/github.com/onosproject/onos-control/build/_output/onos-control /usr/local/bin/onos-control
 
-ENTRYPOINT ["onos-config"]
+ENTRYPOINT ["onos-control"]
