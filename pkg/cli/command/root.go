@@ -16,7 +16,7 @@
 package command
 
 import (
-	"github.com/onosproject/onos-control/pkg/certs"
+	"github.com/onosproject/onos-config/pkg/certs"
 	"github.com/onosproject/onos-control/pkg/northbound"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
