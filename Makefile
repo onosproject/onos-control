@@ -4,13 +4,11 @@ export GO111MODULE=on
 .PHONY: build
 
 ONOS_CONTROL_VERSION := latest
-ONOS_CONTROL_DEBUG_VERSION := debug
 ONOS_BUILD_VERSION := stable
 
 build: # @HELP build the Go binaries and run all validations (default)
 build:
 	CGO_ENABLED=1 go build -o build/_output/onos-control ./cmd/onos
-	CGO_ENABLED=1 go build -gcflags "all=-N -l" -o build/_output/onos-control-debug ./cmd/onos-control
 	go build -o build/_output/onos ./cmd/onos
 
 test: # @HELP run the unit tests and source code validation
@@ -52,11 +50,6 @@ onos-control-docker: onos-control-base-docker # @HELP build onos-control Docker 
 		--build-arg ONOS_CONTROL_BASE_VERSION=${ONOS_CONTROL_VERSION} \
 		-t onosproject/onos-control:${ONOS_CONTROL_VERSION}
 
-onos-control-debug-docker: onos-control-base-docker # @HELP build onos-control Docker debug image
-	docker build . -f build/onos-control-debug/Dockerfile \
-		--build-arg ONOS_CONTROL_BASE_VERSION=${ONOS_CONTROL_VERSION} \
-		-t onosproject/onos-control:${ONOS_CONTROL_DEBUG_VERSION}
-
 onos-cli-docker: onos-control-base-docker # @HELP build onos-cli Docker image
 	docker build . -f build/onos-cli/Dockerfile \
 		--build-arg ONOS_CONTROL_BASE_VERSION=${ONOS_CONTROL_VERSION} \
@@ -76,12 +69,12 @@ integration: kind
 
 
 images: # @HELP build all Docker images
-images: build onos-control-docker onos-control-debug-docker
+images: build onos-control-docker
 
 kind: # @HELP build Docker images and add them to the currently configured kind cluster
 kind: images
 	@if [ "`kind get clusters`" = '' ]; then echo "no kind cluster found" && exit 1; fi
-	kind load docker-image onosproject/onos-config:${ONOS_CONTROL_DEBUG_VERSION}
+	kind load docker-image onosproject/onos-config:${ONOS_CONTROL_VERSION}
 
 all: build images
 
