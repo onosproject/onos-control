@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2020-present Open Networking Foundation <info@opennetworking.org>
+#
+# SPDX-License-Identifier: Apache-2.0
+
 cmd/onos-control/onos-control
 vendor
 build/_output
@@ -5,3 +9,5 @@ build/_output
 coverage.txt
 *.coverprofile
 .idea
+build/build-tools
+

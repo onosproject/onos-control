@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2020-present Open Networking Foundation <info@opennetworking.org>
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
 # onos-control
 [![Build Status](https://travis-ci.com/onosproject/onos-control.svg?branch=master)](https://travis-ci.com/onosproject/onos-control)
 [![Go Report Card](https://goreportcard.com/badge/github.com/onosproject/onos-control)](https://goreportcard.com/report/github.com/onosproject/onos-control)
