@@ -9,6 +9,7 @@ import (
 	"context"
 	"github.com/onosproject/onos-api/go/onos/stratum"
 	"github.com/onosproject/onos-api/go/onos/topo"
+	p4info "github.com/p4lang/p4runtime/go/p4/config/v1"
 	p4api "github.com/p4lang/p4runtime/go/p4/v1"
 )
 
@@ -21,11 +22,14 @@ type DeviceControl interface {
 	// Write applies a set of updates to the device
 	Write(ctx context.Context, request *[]p4api.Update) error
 
-	// EmitPackets requests emission of the specified packet onto the data-plane
+	// EmitPacket requests emission of the specified packet onto the data-plane
 	EmitPacket(ctx context.Context, packetOut *p4api.PacketOut) error
 
 	// HandlePackets starts handling the packet-in message using the supplied channel and packet handler
-	HandlePackets(ch chan *p4api.PacketIn, handler *PacketHandler)
+	HandlePackets(ch chan<- *p4api.PacketIn, handler *PacketHandler)
+
+	// Pipeline returns the P4 information describing the high-level device pipeline
+	Pipeline() *p4info.P4Info
 
 	// Version returns the P4Runtime version of the target
 	Version() string
