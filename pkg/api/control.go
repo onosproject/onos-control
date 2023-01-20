@@ -57,6 +57,8 @@ type Devices interface {
 	GetAll() []*DeviceControl
 }
 
+// TODO: Move to the controller package once it exists, obviously. :)
+
 // NewController creates a new controller for device control contexts using the supplied role descriptor
 // and pipeline translator
 func NewController(role stratum.P4RoleConfig, translator PipelineTranslator) Devices {
