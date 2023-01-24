@@ -11,6 +11,7 @@ require (
 
 require (
 	github.com/Shopify/sarama v1.31.1 // indirect
+	github.com/atomix/runtime/api v0.7.0 // indirect
 	github.com/atomix/runtime/sdk v0.7.4 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/eapache/go-resiliency v1.2.0 // indirect

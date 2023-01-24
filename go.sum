@@ -45,10 +45,17 @@ github.com/Shopify/toxiproxy/v2 v2.3.0/go.mod h1:KvQTtB6RjCJY4zqNJn7C7JDFgsG5uoH
 github.com/antihax/optional v1.0.0/go.mod h1:uupD/76wgC+ih3iEmQUL+0Ugr19nfwCT1kdvxnR2qWY=
 github.com/atomix/go-sdk v0.10.0 h1:dJ9y/PwkXrMdLCTrGOa3NdM68XymzrgSGT8tJPuOZDU=
 github.com/atomix/go-sdk v0.10.0/go.mod h1:WhQi7ckmY6EYwPcsCGL/J4+DCHsvWD9nUZxLKn0nW8c=
+github.com/atomix/runtime/api v0.7.0 h1:yCDoORQqk2rzWr9Eg/NrLFgOu4C/lR3D306IVWzr6ZQ=
+github.com/atomix/runtime/api v0.7.0/go.mod h1:tjbd3w4yij89ZHCYdQUbmvZMC0HoHQQ/3/gVzQuOCH0=
+github.com/atomix/runtime/primitives v0.7.1 h1:/7ADOy3Szg8KORXnWqfc+NtKskpVws70Av4eK2tR+Dg=
+github.com/atomix/runtime/proxy v0.10.0 h1:fIcP6DyrSQ6yEdfh0AlcUX0pJ0qG0PxbLWrlUhxsfaI=
 github.com/atomix/runtime/sdk v0.7.4 h1:9jAAY85/pZMwejg3zhGr0/S2svebriEXlsu2QZ4+bQU=
 github.com/atomix/runtime/sdk v0.7.4/go.mod h1:CIxhWG1UkcWL82+XJ1wwynz1T5k4nYTZdwNlWp8IMd8=
 github.com/benbjohnson/clock v1.1.0 h1:Q92kusRqC1XV2MjkWETPvjJVqKetz1OzxZB7mHJLju8=
 github.com/benbjohnson/clock v1.1.0/go.mod h1:J11/hYXuz8f4ySSvYwY0FKfm+ezbsZBKZxNJlLklBHA=
+github.com/bits-and-blooms/bitset v1.2.0 h1:Kn4yilvwNtMACtf1eYDlG8H77R07mZSPbMjLyS07ChA=
+github.com/bits-and-blooms/bloom/v3 v3.2.0 h1:N+g3GTQ0TVbghahYyzwkQbMZR+IwIwFFC8dpIChtN0U=
+github.com/cenkalti/backoff v2.2.1+incompatible h1:tNowT99t7UNflLxfYYSlKYsBpXdEet03Pg2g16Swow4=
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=
 github.com/cespare/xxhash/v2 v2.1.1/go.mod h1:VGX0DQ3Q6kWi7AoAeZDth3/j3BFtOZR5XLFGgcrjCOs=
 github.com/chzyer/logex v1.1.10/go.mod h1:+Ywpsq7O8HXn0nuIou7OrIPyXbp3wmkHB+jjWRnGsAI=
@@ -154,6 +161,7 @@ github.com/google/pprof v0.0.0-20201023163331-3e6fc7fc9c4c/go.mod h1:kpwsk12EmLe
 github.com/google/pprof v0.0.0-20201203190320-1bf35d6f28c2/go.mod h1:kpwsk12EmLew5upagYY7GY0pfYCcupk39gWOCRROcvE=
 github.com/google/pprof v0.0.0-20201218002935-b9804c9f04c2/go.mod h1:kpwsk12EmLew5upagYY7GY0pfYCcupk39gWOCRROcvE=
 github.com/google/renameio v0.1.0/go.mod h1:KWCgfxg9yswjAJkECMjeO8J8rahYeXnNhOm40UhjYkI=
+github.com/google/uuid v1.1.2 h1:EVhdT+1Kseyi1/pUmXKaFxYsDNy9RQYkMWRH68J/W7Y=
 github.com/google/uuid v1.1.2/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
 github.com/googleapis/gax-go/v2 v2.0.4/go.mod h1:0Wqv26UfaUD9n4G6kQubkQ+KchISgw+vpHVxEJEs9eg=
 github.com/googleapis/gax-go/v2 v2.0.5/go.mod h1:DWXyrwAJ9X0FpwwEdw+IPEYBICEFu5mhpdKc/us6bOk=
