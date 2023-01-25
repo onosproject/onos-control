@@ -26,7 +26,7 @@ type EntityStore interface {
 
 	// Read accepts a query in form of a list of partially populated entities and returns any
 	// matching entities on the specified channel
-	Read(ctx context.Context, query []*p4api.Entity, ch chan<- p4api.Entity) []error
+	Read(ctx context.Context, query []*p4api.Entity, ch chan<- *p4api.Entity) []error
 
 	// Write persists the specified list of updates.
 	Write(ctx context.Context, updates []*p4api.Update) error
@@ -85,17 +85,18 @@ func (s *entityStore) ID() topo.ID {
 
 // Read accepts a query in form of a list of partially populated entities and returns any
 // matching entities on the specified channel
-func (s *entityStore) Read(ctx context.Context, query []*p4api.Entity, ch chan<- p4api.Entity) []error {
+func (s *entityStore) Read(ctx context.Context, query []*p4api.Entity, ch chan<- *p4api.Entity) []error {
 	// Allocate the same number of errors as there are requests - expressed as entities
 	errs := make([]error, len(query))
 
 	for i, request := range query {
 		errs[i] = s.processRead(ctx, request, ch)
 	}
+	close(ch)
 	return errs
 }
 
-func (s *entityStore) processRead(ctx context.Context, query *p4api.Entity, ch chan<- p4api.Entity) error {
+func (s *entityStore) processRead(ctx context.Context, query *p4api.Entity, ch chan<- *p4api.Entity) error {
 	switch {
 	case query.GetTableEntry() != nil:
 		return s.readTableEntries(ctx, query.GetTableEntry(), ch)

@@ -217,8 +217,8 @@ github.com/onosproject/onos-api/go v0.10.21 h1:rMxmH5UxOodgplTQkCO9+Iq3ZkgexBV6/
 github.com/onosproject/onos-api/go v0.10.21/go.mod h1:R882+8UcxQBLpCopnnbBnemXtJ77UXnL2I1y5yHbq10=
 github.com/onosproject/onos-lib-go v0.10.6 h1:/WCaZddI3SywC0StjOficcnaiQ49eOs+JIRbB/H4A3U=
 github.com/onosproject/onos-lib-go v0.10.6/go.mod h1:BW7ofxESngKlsUw6YmO/hbUrbmL3sNxdXkzZkDev/tE=
-github.com/onosproject/onos-net-lib v1.1.4 h1:Q0uB8iJwFTEPd3nrSaj+UXUZNo0moraIM65BEvZkHXw=
-github.com/onosproject/onos-net-lib v1.1.4/go.mod h1:Fpe3V3NtcSQGdLO1IeO50JHEcGba55zyuskjPBk8qnM=
+github.com/onosproject/onos-net-lib v1.1.5 h1:RbG4gshxnWfhysflYnlDvmUXekjRLQgpZcfER3rP4Q0=
+github.com/onosproject/onos-net-lib v1.1.5/go.mod h1:Fpe3V3NtcSQGdLO1IeO50JHEcGba55zyuskjPBk8qnM=
 github.com/p4lang/p4runtime v1.4.0-rc.5 h1:zztZGEkRM09Hf25SIX0p0ML07dmRCgsy0oC8uafmjtg=
 github.com/p4lang/p4runtime v1.4.0-rc.5/go.mod h1:m9laObIMXM9N1ElGXijc66/MSM5eheZJLRLxg/TG+fU=
 github.com/pelletier/go-toml v1.9.4 h1:tjENF6MfZAg8e4ZmZTeWaWiT2vXtsoO6+iuOjFhECwM=

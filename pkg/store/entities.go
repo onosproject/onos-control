@@ -12,6 +12,7 @@ import (
 	p4info "github.com/p4lang/p4runtime/go/p4/config/v1"
 	p4api "github.com/p4lang/p4runtime/go/p4/v1"
 	"hash"
+	"io"
 	"sort"
 )
 
@@ -60,6 +61,42 @@ func (s *entityStore) modifyTableEntry(ctx context.Context, entry *p4api.TableEn
 
 	// TODO: Implement updates of direct resources, if/as necessary
 	return nil
+}
+
+func (s *entityStore) readTableEntries(ctx context.Context, query *p4api.TableEntry, ch chan<- *p4api.Entity) error {
+	if query.TableId != 0 {
+		t, ok := s.tables[query.TableId]
+		if !ok {
+			return errors.NewInvalid("No such table %d", query.TableId)
+		}
+		return s.readSpecificTableEntries(ctx, query.TableId, t, query, ch)
+	}
+	for id, t := range s.tables {
+		if err := s.readSpecificTableEntries(ctx, id, t, query, ch); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (s *entityStore) readSpecificTableEntries(ctx context.Context, id uint32, t *table, query *p4api.TableEntry, ch chan<- *p4api.Entity) error {
+	// TODO: fully implement query mechanism
+	// For now, just return all entries
+	stream, err := t.entries.List(ctx)
+	if err != nil {
+		return errors.FromAtomix(err)
+	}
+
+	for {
+		v, err := stream.Next()
+		if err != nil {
+			if err == io.EOF {
+				return nil
+			}
+			return err
+		}
+		ch <- &p4api.Entity{Entity: &p4api.Entity_TableEntry{TableEntry: v.Value}}
+	}
 }
 
 func (s *entityStore) findTableAndKey(entry *p4api.TableEntry) (*table, string, error) {
@@ -203,38 +240,34 @@ func (s *entityStore) deleteCloneSessionEntry(ctx context.Context, entry *p4api.
 	return nil
 }
 
-func (s *entityStore) readTableEntries(ctx context.Context, entry *p4api.TableEntry, ch chan<- p4api.Entity) error {
+func (s *entityStore) readCounterEntries(ctx context.Context, entry *p4api.CounterEntry, ch chan<- *p4api.Entity) error {
 	return nil
 }
 
-func (s *entityStore) readCounterEntries(ctx context.Context, entry *p4api.CounterEntry, ch chan<- p4api.Entity) error {
+func (s *entityStore) readDirectCounterEntries(ctx context.Context, entry *p4api.DirectCounterEntry, ch chan<- *p4api.Entity) error {
 	return nil
 }
 
-func (s *entityStore) readDirectCounterEntries(ctx context.Context, entry *p4api.DirectCounterEntry, ch chan<- p4api.Entity) error {
+func (s *entityStore) readMeterEntries(ctx context.Context, entry *p4api.MeterEntry, ch chan<- *p4api.Entity) error {
 	return nil
 }
 
-func (s *entityStore) readMeterEntries(ctx context.Context, entry *p4api.MeterEntry, ch chan<- p4api.Entity) error {
+func (s *entityStore) readDirectMeterEntries(ctx context.Context, entry *p4api.DirectMeterEntry, ch chan<- *p4api.Entity) error {
 	return nil
 }
 
-func (s *entityStore) readDirectMeterEntries(ctx context.Context, entry *p4api.DirectMeterEntry, ch chan<- p4api.Entity) error {
+func (s *entityStore) readActionProfileGroups(ctx context.Context, group *p4api.ActionProfileGroup, ch chan<- *p4api.Entity) error {
 	return nil
 }
 
-func (s *entityStore) readActionProfileGroups(ctx context.Context, group *p4api.ActionProfileGroup, ch chan<- p4api.Entity) error {
+func (s *entityStore) readActionProfileMembers(ctx context.Context, member *p4api.ActionProfileMember, ch chan<- *p4api.Entity) error {
 	return nil
 }
 
-func (s *entityStore) readActionProfileMembers(ctx context.Context, member *p4api.ActionProfileMember, ch chan<- p4api.Entity) error {
+func (s *entityStore) readMulticastGroupEntries(ctx context.Context, entry *p4api.MulticastGroupEntry, ch chan<- *p4api.Entity) error {
 	return nil
 }
 
-func (s *entityStore) readMulticastGroupEntries(ctx context.Context, entry *p4api.MulticastGroupEntry, ch chan<- p4api.Entity) error {
-	return nil
-}
-
-func (s *entityStore) readCloneSessionEntries(ctx context.Context, entry *p4api.CloneSessionEntry, ch chan<- p4api.Entity) error {
+func (s *entityStore) readCloneSessionEntries(ctx context.Context, entry *p4api.CloneSessionEntry, ch chan<- *p4api.Entity) error {
 	return nil
 }
