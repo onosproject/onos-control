@@ -48,42 +48,21 @@ func TestStoreBasics(t *testing.T) {
 	query := []*p4api.Entity{
 		{Entity: &p4api.Entity_TableEntry{TableEntry: &p4api.TableEntry{}}},
 	}
-	ch := make(chan *p4api.Entity, 1024)
-	errs := store.Read(ctx, query, ch)
-	for _, er := range errs {
-		assert.NoError(t, er)
-	}
-
-	// Validate that we got all entries
-	entities := make([]*p4api.Entity, 0, len(updates))
-	for e := range ch {
-		entities = append(entities, e)
-	}
-	assert.Len(t, entities, len(updates))
+	_ = readEntries(ctx, t, store, query, len(updates))
 
 	// Query a specific table
 	tableID := info.Tables[0].Preamble.Id
 	query = []*p4api.Entity{
 		{Entity: &p4api.Entity_TableEntry{TableEntry: &p4api.TableEntry{TableId: tableID}}},
 	}
-	ch = make(chan *p4api.Entity, 1024)
-	errs = store.Read(ctx, query, ch)
-	for _, er := range errs {
-		assert.NoError(t, er)
-	}
-
-	// Validate that we got all entries
+	// Count expected updates for this table
 	tupdates := make([]*p4api.Update, 0, len(updates))
 	for _, update := range updates {
 		if update.GetEntity().GetTableEntry().TableId == tableID {
 			tupdates = append(tupdates, update)
 		}
 	}
-	entities = make([]*p4api.Entity, 0, len(tupdates))
-	for e := range ch {
-		entities = append(entities, e)
-	}
-	assert.Len(t, entities, len(tupdates))
+	entities := readEntries(ctx, t, store, query, len(tupdates))
 
 	// Remove the first entity
 	deletes := []*p4api.Update{{Type: p4api.Update_DELETE, Entity: entities[0]}}
@@ -91,14 +70,27 @@ func TestStoreBasics(t *testing.T) {
 	assert.NoError(t, err)
 
 	// Validate that we got smaller number of entities by 1
-	ch = make(chan *p4api.Entity, 1024)
-	errs = store.Read(ctx, query, ch)
+	_ = readEntries(ctx, t, store, query, len(tupdates)-1)
+
+	assert.NoError(t, es.Purge(ctx))
+	query = []*p4api.Entity{
+		{Entity: &p4api.Entity_TableEntry{TableEntry: &p4api.TableEntry{}}},
+	}
+	readEntries(ctx, t, store, query, 0)
+}
+
+func readEntries(ctx context.Context, t *testing.T, store EntityStore, query []*p4api.Entity, count int) []*p4api.Entity {
+	ch := make(chan *p4api.Entity, 1024)
+	errs := store.Read(ctx, query, ch)
 	for _, er := range errs {
 		assert.NoError(t, er)
 	}
-	entities = make([]*p4api.Entity, 0, len(tupdates)-1)
+
+	// Validate that we got all entries
+	entities := make([]*p4api.Entity, 0, count)
 	for e := range ch {
 		entities = append(entities, e)
 	}
-	assert.Len(t, entities, len(tupdates)-1)
+	assert.Len(t, entities, count)
+	return entities
 }

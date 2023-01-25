@@ -14,6 +14,8 @@ import (
 	"github.com/onosproject/onos-lib-go/pkg/errors"
 	p4info "github.com/p4lang/p4runtime/go/p4/config/v1"
 	p4api "github.com/p4lang/p4runtime/go/p4/v1"
+	"io"
+	"sync"
 )
 
 // EntityStore is an abstraction of a store capable of maintaining various P4 entities
@@ -38,6 +40,7 @@ type entityStore struct {
 	id     topo.ID
 	info   *p4info.P4Info
 
+	mu     sync.RWMutex
 	tables map[uint32]*table
 	// TODO: Insert Atomix primitives to track table, group, meter, etc. entries
 }
@@ -64,12 +67,6 @@ func NewEntityStore(ctx context.Context, client primitive.Client, id topo.ID, in
 	return s, nil
 }
 
-// Purge purges the collection of persisted resources associated with this entity store.
-func (s *entityStore) Purge(ctx context.Context) error {
-	// TODO: Implement me
-	return nil
-}
-
 func (s *entityStore) loadTables(ctx context.Context, tables []*p4info.Table) error {
 	for _, t := range tables {
 		emap, err := _map.NewBuilder[string, *p4api.TableEntry](s.client, fmt.Sprintf("control-%s-table-%d", s.id, t.Preamble.Id)).
@@ -82,6 +79,35 @@ func (s *entityStore) loadTables(ctx context.Context, tables []*p4info.Table) er
 		s.tables[t.Preamble.Id] = &table{entries: emap, info: t}
 	}
 	return nil
+}
+
+// Purge purges the collection of persisted resources associated with this entity store.
+func (s *entityStore) Purge(ctx context.Context) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	for _, t := range s.tables {
+		if err := t.purge(ctx); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (t *table) purge(ctx context.Context) error {
+	stream, err := t.entries.List(ctx)
+	if err != nil {
+		return errors.FromAtomix(err)
+	}
+	for {
+		v, err := stream.Next()
+		if err != nil {
+			if err == io.EOF {
+				return t.entries.Close(ctx)
+			}
+			return err
+		}
+		_, _ = t.entries.Remove(ctx, v.Key)
+	}
 }
 
 // ID returns the ID of the device whose control entities it persists.
