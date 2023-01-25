@@ -80,8 +80,6 @@ func (s *entityStore) readTableEntries(ctx context.Context, query *p4api.TableEn
 }
 
 func (s *entityStore) readSpecificTableEntries(ctx context.Context, id uint32, t *table, query *p4api.TableEntry, ch chan<- *p4api.Entity) error {
-	// TODO: fully implement query mechanism
-	// For now, just return all entries
 	stream, err := t.entries.List(ctx)
 	if err != nil {
 		return errors.FromAtomix(err)
@@ -95,8 +93,32 @@ func (s *entityStore) readSpecificTableEntries(ctx context.Context, id uint32, t
 			}
 			return err
 		}
-		ch <- &p4api.Entity{Entity: &p4api.Entity_TableEntry{TableEntry: v.Value}}
+		if s.matchesQuery(v.Value, query) {
+			ch <- &p4api.Entity{Entity: &p4api.Entity_TableEntry{TableEntry: v.Value}}
+		}
 	}
+}
+
+// Returns true if the specified entry matches the query
+func (s *entityStore) matchesQuery(entry *p4api.TableEntry, query *p4api.TableEntry) bool {
+	// Match on priority first
+	if query.Priority > 0 && entry.Priority != query.Priority {
+		return false
+	}
+
+	// Match on field matches
+	if len(query.Match) >= 0 && !s.matchesMatch(entry.Match, query.Match) {
+		return false
+	}
+
+	// TODO: Implement other matching criteria
+
+	// Passed all checks, so it matches
+	return true
+}
+
+func (s *entityStore) matchesMatch(entry []*p4api.FieldMatch, query []*p4api.FieldMatch) bool {
+	return true
 }
 
 func (s *entityStore) findTableAndKey(entry *p4api.TableEntry) (*table, string, error) {
@@ -116,7 +138,7 @@ func (s *entityStore) findTableAndKey(entry *p4api.TableEntry) (*table, string, 
 	return t, key, nil
 }
 
-// Produces a table entry key using a uint64 hash of its field matches; returns error if the matches do not comply
+// Produces a table entry key using a sha1 hash of its field matches; returns error if the matches do not comply
 // with the table schema
 func (t *table) entryKey(entry *p4api.TableEntry) (string, error) {
 	if entry.IsDefaultAction {
@@ -129,7 +151,6 @@ func (t *table) entryKey(entry *p4api.TableEntry) (string, error) {
 	hf := sha1.New()
 
 	// This assumes matches have already been put in canonical order
-	// TODO: implement field ID validation against the P4Info table schema
 	for i, m := range entry.Match {
 		if err := t.validateMatch(i, m); err != nil {
 			return "", err
@@ -191,6 +212,8 @@ func (s *entityStore) removeTableEntry(ctx context.Context, entry *p4api.TableEn
 	}
 	return nil
 }
+
+// TODO: Implement the variants below
 
 func (s *entityStore) modifyCounterEntry(ctx context.Context, entry *p4api.CounterEntry, insert bool) error {
 	return nil

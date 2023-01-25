@@ -7,7 +7,6 @@ package store
 import (
 	"context"
 	"github.com/atomix/go-sdk/pkg/test"
-	"github.com/onosproject/onos-api/go/onos/topo"
 	"github.com/onosproject/onos-net-lib/pkg/p4utils"
 	testutils "github.com/onosproject/onos-net-lib/pkg/test"
 	p4api "github.com/p4lang/p4runtime/go/p4/v1"
@@ -24,7 +23,7 @@ func TestStoreBasics(t *testing.T) {
 	info, err := p4utils.LoadP4Info("p4info.txt")
 	assert.NoError(t, err)
 
-	store, err := NewEntityStore(ctx, client, topo.ID("foo"), info)
+	store, err := NewEntityStore(ctx, client, "foo", info)
 	assert.NoError(t, err)
 
 	es := store.(*entityStore)
@@ -85,4 +84,21 @@ func TestStoreBasics(t *testing.T) {
 		entities = append(entities, e)
 	}
 	assert.Len(t, entities, len(tupdates))
+
+	// Remove the first entity
+	deletes := []*p4api.Update{{Type: p4api.Update_DELETE, Entity: entities[0]}}
+	err = store.Write(ctx, deletes)
+	assert.NoError(t, err)
+
+	// Validate that we got smaller number of entities by 1
+	ch = make(chan *p4api.Entity, 1024)
+	errs = store.Read(ctx, query, ch)
+	for _, er := range errs {
+		assert.NoError(t, er)
+	}
+	entities = make([]*p4api.Entity, 0, len(tupdates)-1)
+	for e := range ch {
+		entities = append(entities, e)
+	}
+	assert.Len(t, entities, len(tupdates)-1)
 }

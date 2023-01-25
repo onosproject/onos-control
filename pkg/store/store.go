@@ -64,6 +64,12 @@ func NewEntityStore(ctx context.Context, client primitive.Client, id topo.ID, in
 	return s, nil
 }
 
+// Purge purges the collection of persisted resources associated with this entity store.
+func (s *entityStore) Purge(ctx context.Context) error {
+	// TODO: Implement me
+	return nil
+}
+
 func (s *entityStore) loadTables(ctx context.Context, tables []*p4info.Table) error {
 	for _, t := range tables {
 		emap, err := _map.NewBuilder[string, *p4api.TableEntry](s.client, fmt.Sprintf("control-%s-table-%d", s.id, t.Preamble.Id)).
