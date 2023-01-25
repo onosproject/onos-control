@@ -44,7 +44,12 @@ type entityStore struct {
 
 // NewEntityStore creates a new P4 entity store for the specified device
 func NewEntityStore(ctx context.Context, client primitive.Client, id topo.ID, info *p4info.P4Info) (EntityStore, error) {
-	s := &entityStore{client: client, id: id, info: info}
+	s := &entityStore{
+		client: client,
+		id:     id,
+		info:   info,
+		tables: make(map[uint32]*table),
+	}
 
 	// Preload/create stores for the required sets of entities, e.g. tables, counters, meters, etc.
 	if err := s.loadTables(ctx, info.Tables); err != nil {

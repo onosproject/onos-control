@@ -6,14 +6,16 @@ require (
 	github.com/atomix/go-sdk v0.10.0
 	github.com/onosproject/onos-api/go v0.10.21
 	github.com/onosproject/onos-lib-go v0.10.6
+	github.com/onosproject/onos-net-lib v1.1.4
 	github.com/p4lang/p4runtime v1.4.0-rc.5
+	github.com/stretchr/testify v1.7.1
 )
 
 require (
 	github.com/Shopify/sarama v1.31.1 // indirect
 	github.com/atomix/runtime/api v0.7.0 // indirect
-	github.com/atomix/runtime/primitives v0.7.1 // indirect
-	github.com/atomix/runtime/proxy v0.10.0 // indirect
+	github.com/atomix/runtime/primitives v0.7.2 // indirect
+	github.com/atomix/runtime/proxy v0.12.0 // indirect
 	github.com/atomix/runtime/sdk v0.7.4 // indirect
 	github.com/bits-and-blooms/bitset v1.2.0 // indirect
 	github.com/bits-and-blooms/bloom/v3 v3.2.0 // indirect
@@ -42,6 +44,7 @@ require (
 	github.com/pelletier/go-toml v1.9.4 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.0-beta.8 // indirect
 	github.com/pierrec/lz4 v2.6.1+incompatible // indirect
+	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rcrowley/go-metrics v0.0.0-20201227073835-cf1acfcdf475 // indirect
 	github.com/spf13/afero v1.8.2 // indirect
 	github.com/spf13/cast v1.4.1 // indirect
@@ -59,7 +62,6 @@ require (
 	google.golang.org/genproto v0.0.0-20220608133413-ed9918b62aac // indirect
 	google.golang.org/grpc v1.47.0 // indirect
 	google.golang.org/protobuf v1.28.0 // indirect
-	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 	gopkg.in/ini.v1 v1.66.4 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
