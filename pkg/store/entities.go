@@ -111,13 +111,12 @@ func (s *entityStore) matchesQuery(entry *p4api.TableEntry, query *p4api.TableEn
 		return false
 	}
 
-	// TODO: Implement other matching criteria
-
 	// Passed all checks, so it matches
 	return true
 }
 
 func (s *entityStore) matchesMatch(entry []*p4api.FieldMatch, query []*p4api.FieldMatch) bool {
+	// TODO: Implement matching on specific fields
 	return true
 }
 
