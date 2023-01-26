@@ -9,6 +9,7 @@ import (
 	"github.com/atomix/go-sdk/pkg/test"
 	"github.com/onosproject/onos-net-lib/pkg/p4utils"
 	testutils "github.com/onosproject/onos-net-lib/pkg/test"
+	p4info "github.com/p4lang/p4runtime/go/p4/config/v1"
 	p4api "github.com/p4lang/p4runtime/go/p4/v1"
 	"github.com/stretchr/testify/assert"
 	"math/rand"
@@ -30,17 +31,7 @@ func TestStoreBasics(t *testing.T) {
 	assert.Len(t, es.tables, 20)
 
 	// Generate a slew of random updates and store them
-	updates := make([]*p4api.Update, 0, 512)
-	tl := int32(len(info.Tables))
-	for i := 0; i < cap(updates); i++ {
-		tableInfo := info.Tables[rand.Int31n(tl)]
-		for tableInfo.Size < 128 || tableInfo.IsConstTable {
-			tableInfo = info.Tables[rand.Int31n(tl)]
-		}
-		entry := testutils.GenerateTableEntry(tableInfo, rand.Int31n(10), nil)
-		update := &p4api.Update{Type: p4api.Update_INSERT, Entity: &p4api.Entity{Entity: &p4api.Entity_TableEntry{TableEntry: entry}}}
-		updates = append(updates, update)
-	}
+	updates := generateRandomUpdates(info)
 	err = store.Write(ctx, updates)
 	assert.NoError(t, err)
 
@@ -77,6 +68,21 @@ func TestStoreBasics(t *testing.T) {
 		{Entity: &p4api.Entity_TableEntry{TableEntry: &p4api.TableEntry{}}},
 	}
 	readEntries(ctx, t, store, query, 0)
+}
+
+func generateRandomUpdates(info *p4info.P4Info) []*p4api.Update {
+	updates := make([]*p4api.Update, 0, 512)
+	tl := int32(len(info.Tables))
+	for i := 0; i < cap(updates); i++ {
+		tableInfo := info.Tables[rand.Int31n(tl)]
+		for tableInfo.Size < 128 || tableInfo.IsConstTable {
+			tableInfo = info.Tables[rand.Int31n(tl)]
+		}
+		entry := testutils.GenerateTableEntry(tableInfo, rand.Int31n(10), nil)
+		update := &p4api.Update{Type: p4api.Update_INSERT, Entity: &p4api.Entity{Entity: &p4api.Entity_TableEntry{TableEntry: entry}}}
+		updates = append(updates, update)
+	}
+	return updates
 }
 
 func readEntries(ctx context.Context, t *testing.T, store EntityStore, query []*p4api.Entity, count int) []*p4api.Entity {
