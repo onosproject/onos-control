@@ -36,20 +36,20 @@ type Stores interface {
 type storeManager struct {
 	Stores
 	mu     sync.RWMutex
+	client primitive.Client
 	stores map[topo.ID]EntityStore
 }
 
 // NewStoreManager creates a new stores manager
 func NewStoreManager(client primitive.Client) Stores {
-	// TODO: Implement me
-	return &storeManager{stores: make(map[topo.ID]EntityStore, 0)}
+	return &storeManager{client: client, stores: make(map[topo.ID]EntityStore, 0)}
 }
 
 // Get returns an entity store for the specified device.
 func (sm *storeManager) Get(ctx context.Context, id topo.ID, info *p4info.P4Info) (EntityStore, error) {
 	sm.mu.RLock()
 	store, ok := sm.stores[id]
-	defer sm.mu.RUnlock()
+	sm.mu.RUnlock()
 	if ok {
 		return store, nil
 	}
@@ -67,7 +67,8 @@ func (sm *storeManager) Get(ctx context.Context, id topo.ID, info *p4info.P4Info
 	}
 
 	var err error
-	store, err = newEntityStore(id, info)
+	log.Infof("Creating store %s", id)
+	store, err = NewEntityStore(ctx, sm.client, id, info)
 	if err != nil {
 		return nil, errors.FromAtomix(err)
 	}
@@ -92,7 +93,6 @@ func (sm *storeManager) Purge(ctx context.Context, id topo.ID) error {
 	if err != nil {
 		return err
 	}
-	log.Infof("Purging store %s: %+v", id, store)
-	// TODO: Implement me
-	return nil
+	log.Infof("Purging store %s", id)
+	return store.(*entityStore).Purge(ctx)
 }

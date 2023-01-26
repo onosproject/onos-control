@@ -7,7 +7,6 @@ package api
 
 import (
 	"context"
-	"github.com/onosproject/onos-api/go/onos/stratum"
 	"github.com/onosproject/onos-api/go/onos/topo"
 	p4info "github.com/p4lang/p4runtime/go/p4/config/v1"
 	p4api "github.com/p4lang/p4runtime/go/p4/v1"
@@ -41,11 +40,11 @@ type PacketHandler interface {
 	Handle(packetIn *p4api.PacketIn) error
 }
 
-// Devices is an abstraction of an entity capable ot tracking device control contexts
+// Devices is an abstraction of an entity capable of tracking device control contexts
 // of multiple devices on behalf of the control application.
 type Devices interface {
 	// Add requests creation of a new device flow control context using its P4Runtime connection endpoint
-	Add(id topo.ID, p4rtEndpoint string) DeviceControl
+	Add(ctx context.Context, id topo.ID, p4rtEndpoint string, translator PipelineTranslator) (DeviceControl, error)
 
 	// Remove requests removal of device control context
 	Remove(id topo.ID)
@@ -54,13 +53,5 @@ type Devices interface {
 	Get(id topo.ID) DeviceControl
 
 	// GetAll returns all device flow control entities presently registered with the manager
-	GetAll() []*DeviceControl
-}
-
-// TODO: Move to the controller package once it exists, obviously. :)
-
-// NewController creates a new controller for device control contexts using the supplied role descriptor
-// and pipeline translator
-func NewController(role stratum.P4RoleConfig, translator PipelineTranslator) Devices {
-	return nil
+	GetAll() []DeviceControl
 }
