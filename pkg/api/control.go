@@ -12,9 +12,30 @@ import (
 	p4api "github.com/p4lang/p4runtime/go/p4/v1"
 )
 
+// State represents the various states of controller lifecycle
+type State int
+
+// 	Disconnected => Connected => Synchronizing => Synchronized => Validating => Synchronized
+
+const (
+	// Disconnected represents the default/initial state
+	Disconnected State = iota
+	// Connected represents state where connection to the P4Runtime endpoint has been established
+	Connected
+	// Synchronizing represents state where pipeline is being validated and the initial synchronization of entries is in progress
+	Synchronizing
+	// Synchronized represents state where all entries have been synchronized
+	Synchronized
+	// Validating represents state where the validation of entry synchronization is in progress
+	Validating
+)
+
 // DeviceControl is an abstraction of an entity allowing control over the
 // forwarding behavior of a single device
 type DeviceControl interface {
+	// State returns the current state of the controller
+	State() State
+
 	// Read receives a query and returns back all requested control entries on the given channel
 	Read(ctx context.Context, entities *[]p4api.Entity, ch chan<- []*p4api.Entity) error
 
@@ -32,6 +53,9 @@ type DeviceControl interface {
 
 	// Version returns the P4Runtime version of the target
 	Version() string
+
+	// TODO: Add means for application to watch the state?
+	// TODO: Consider changing the read to use iterator pattern rather than a channel
 }
 
 // PacketHandler is an abstraction of an entity capable of handling an incoming packet-in

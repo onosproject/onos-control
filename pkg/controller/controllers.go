@@ -7,16 +7,17 @@ package controller
 
 import (
 	"context"
-	"github.com/onosproject/onos-api/go/onos/stratum"
+	"github.com/atomix/go-sdk/pkg/primitive"
 	"github.com/onosproject/onos-api/go/onos/topo"
 	"github.com/onosproject/onos-control/pkg/api"
 	"github.com/onosproject/onos-control/pkg/store"
+	p4api "github.com/p4lang/p4runtime/go/p4/v1"
 	"sync"
 )
 
 type devicesController struct {
 	api.Devices
-	role   stratum.P4RoleConfig
+	role   *p4api.Role
 	stores store.Stores
 
 	mu      sync.RWMutex
@@ -25,10 +26,10 @@ type devicesController struct {
 
 // NewController creates a new controller for device control contexts using the supplied role descriptor
 // and pipeline translator
-func NewController(role stratum.P4RoleConfig, stores store.Stores) api.Devices {
+func NewController(role *p4api.Role, client primitive.Client) api.Devices {
 	return &devicesController{
 		role:   role,
-		stores: stores,
+		stores: store.NewStoreManager(client),
 	}
 }
 
@@ -41,11 +42,11 @@ func (c *devicesController) Add(ctx context.Context, id topo.ID, p4rtEndpoint st
 		return d, nil
 	}
 
-	store, err := c.stores.Get(ctx, id, translator.FromPipeline())
+	s, err := c.stores.Get(ctx, id, translator.FromPipeline())
 	if err != nil {
 		return nil, err
 	}
-	return newDeviceController(id, p4rtEndpoint, store, translator), nil
+	return newDeviceController(id, p4rtEndpoint, s, translator), nil
 }
 
 // Remove requests removal of device control context

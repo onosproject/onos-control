@@ -18,7 +18,7 @@ func TestStoresBasics(t *testing.T) {
 
 	ctx := context.TODO()
 
-	info, err := p4utils.LoadP4Info("p4info.txt")
+	info, err := p4utils.LoadP4Info("../../test/p4info.txt")
 	assert.NoError(t, err)
 
 	stores := NewStoreManager(client)
