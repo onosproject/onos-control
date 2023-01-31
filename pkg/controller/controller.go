@@ -19,15 +19,24 @@ type deviceController struct {
 	id         topo.ID
 	endpoint   string
 	translator api.PipelineTranslator
+	store      store.EntityStore
 	version    string
+	state      api.State
 }
 
-func newDeviceController(id topo.ID, endpoint string, store store.EntityStore, translator api.PipelineTranslator) api.DeviceControl {
+func newDeviceController(id topo.ID, endpoint string, entityStore store.EntityStore, translator api.PipelineTranslator) api.DeviceControl {
 	return &deviceController{
 		id:         id,
 		endpoint:   endpoint,
 		translator: translator,
+		store:      entityStore,
 	}
+}
+
+// State returns the current state of the controller
+func (d *deviceController) State() api.State {
+	// TODO: Add synchronization
+	return d.state
 }
 
 // Read receives a query and returns back all requested control entries on the given channel
