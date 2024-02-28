@@ -6,7 +6,7 @@ require (
 	github.com/atomix/go-sdk v0.10.0
 	github.com/onosproject/onos-api/go v0.10.21
 	github.com/onosproject/onos-lib-go v0.10.6
-	github.com/onosproject/onos-net-lib v1.1.5
+	github.com/onosproject/onos-net-lib v1.1.9
 	github.com/p4lang/p4runtime v1.4.0-rc.5
 	github.com/stretchr/testify v1.7.1
 )
