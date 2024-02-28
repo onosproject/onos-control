@@ -8,7 +8,7 @@ require (
 	github.com/onosproject/onos-lib-go v0.10.6
 	github.com/onosproject/onos-net-lib v1.1.5
 	github.com/p4lang/p4runtime v1.4.0-rc.5
-	github.com/stretchr/testify v1.7.1
+	github.com/stretchr/testify v1.8.4
 )
 
 require (
@@ -64,5 +64,5 @@ require (
 	google.golang.org/protobuf v1.28.0 // indirect
 	gopkg.in/ini.v1 v1.66.4 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
-	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
